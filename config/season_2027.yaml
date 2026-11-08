@@ -1,0 +1,33 @@
+# 2027 season inputs. Edit freely: the grid and calendar drive the simulation.
+# Researched 2026-11-08. The Jolpica API does not have the 2027 calendar yet; once it
+# does, the API schedule replaces the calendar block below automatically.
+season: 2027
+
+teams:
+  # lineage ids come from config/teams.yaml (car development follows the organisation).
+  - {lineage: brackley,      name: Mercedes,       drivers: [antonelli, russell]}       # unchanged, Wolff: Russell deal "already done" (gpblog)
+  - {lineage: milton_keynes, name: Red Bull,       drivers: [max_verstappen, hadjar]}
+  - {lineage: ferrari,       name: Ferrari,        drivers: [leclerc, hamilton]}
+  - {lineage: mclaren,       name: McLaren,        drivers: [norris, piastri]}
+  - {lineage: faenza,        name: Racing Bulls,   drivers: [lawson, arvid_lindblad]}
+  - {lineage: enstone,       name: Alpine,         drivers: [gasly, colapinto]}
+  - {lineage: haas,          name: Haas,           drivers: [bearman, rafael_camara]}   # Camara replaces Ocon (AP, 2026-10-15); Bearman option expected
+  - {lineage: hinwil,        name: Audi,           drivers: [hulkenberg, bortoleto]}
+  - {lineage: silverstone,   name: Aston Martin,   drivers: [alonso, stroll]}
+  - {lineage: williams,      name: Williams,       drivers: [albon, sainz]}
+  - {lineage: cadillac,      name: Cadillac,       drivers: [perez, bottas]}
+
+calendar:
+  # 24 rounds, 10 sprints: Bahrain, Australia, Japan, Canada, Monaco, Great Britain, Italy,
+  # Sao Paulo, Qatar, Abu Dhabi (formula1.com, 2026-09-16). Round numbers for the middle of
+  # the season are approximate (R1 Bahrain, R3 Australia, R9 Portugal, R17 Turkey, R24 Abu Dhabi known).
+  rounds: 24
+  sprint_rounds: [1, 3, 4, 7, 8, 11, 15, 21, 23, 24]
+
+points:
+  race: [25, 18, 15, 12, 10, 8, 6, 4, 2, 1]
+  sprint: [8, 7, 6, 5, 4, 3, 2, 1]
+
+# Birth dates missing from the API (only the age bucket matters).
+dob_overrides:
+  rafael_camara: "2005-05-02"   # approximate; Jolpica has no dateOfBirth
