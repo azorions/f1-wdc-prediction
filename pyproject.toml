@@ -1,0 +1,31 @@
+[project]
+name = "f1wdc"
+version = "0.1.0"
+description = "Predict the 2027 Formula 1 World Drivers' Championship with driver/car ratings and Monte Carlo season simulation"
+readme = "README.md"
+authors = [
+    { name = "azorions", email = "ivanryes05@gmail.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "numpy>=1.26",
+    "pandas>=2.2",
+    "scipy>=1.13",
+    "requests>=2.32",
+    "pyyaml>=6.0",
+    "jinja2>=3.1",
+    "rich>=13.7",
+]
+
+[project.scripts]
+f1wdc = "f1wdc.cli:main"
+
+[dependency-groups]
+dev = ["pytest>=8.2"]
+
+[build-system]
+requires = ["uv_build>=0.13.1,<0.14.0"]
+build-backend = "uv_build"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
