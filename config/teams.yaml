@@ -1,0 +1,16 @@
+# Maps Ergast/Jolpica constructorId -> team lineage (the organisation / factory that
+# carries its car development forward across rebrands). Unmapped ids are their own lineage.
+lineages:
+  brackley:      [tyrrell, bar, honda, brawn, mercedes]
+  enstone:       [benetton, renault, lotus_f1, alpine]
+  milton_keynes: [stewart, jaguar, red_bull]
+  silverstone:   [jordan, mf1, spyker_mf1, spyker, force_india, racing_point, aston_martin]
+  hinwil:        [sauber, bmw_sauber, alfa, audi]
+  faenza:        [minardi, toro_rosso, alphatauri, rb]
+  banbury:       [virgin, marussia, manor]
+  leafield:      [lotus_racing, caterham]
+  magny_cours:   [ligier, prost]
+  leafield_arrows: [footwork, arrows]
+# Single-identity teams (no rebrand history in 1994+ data); listed to silence the warning.
+standalone: [ferrari, mclaren, williams, haas, cadillac, toyota, super_aguri, hrt, team_lotus,
+             larrousse, pacific, simtek, forti]

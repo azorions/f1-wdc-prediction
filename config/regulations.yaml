@@ -1,0 +1,4 @@
+# First seasons of major technical regulation overhauls.
+# Season N+1 is "reg_year_1" if it starts a new rule set, "reg_year_2" if N started one,
+# otherwise "stable". 2027 is reg_year_2 (second season of the 2026 rules).
+reg_year_1: [1998, 2009, 2014, 2017, 2022, 2026]
