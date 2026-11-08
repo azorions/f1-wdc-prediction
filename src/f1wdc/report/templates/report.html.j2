@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>F1 {{ season }} Title Odds</title>
+<style>
+:root {
+  color-scheme: light;
+  --page: #f9f9f7; --surface-1: #fcfcfb; --ink-1: #0b0b0b; --ink-2: #52514e; --muted: #898781;
+  --grid: #e1e0d9; --axis: #c3c2b7; --border: rgba(11,11,11,0.10);
+  --series-1: #2a78d6; --series-2: #eb6834; --context: #c3c2b7;
+  --h1: #cde2fb; --h2: #9ec5f4; --h3: #6da7ec; --h4: #3987e5; --h5: #256abf; --h6: #184f95; --h7: #0d366b;
+}
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) {
+    color-scheme: dark;
+    --page: #0d0d0d; --surface-1: #1a1a19; --ink-1: #f0efec; --ink-2: #c3c2b7; --muted: #898781;
+    --grid: #2c2c2a; --axis: #383835; --border: rgba(255,255,255,0.10);
+    --series-1: #3987e5; --series-2: #d95926; --context: #52514e;
+    --h1: #104281; --h2: #184f95; --h3: #1c5cab; --h4: #2a78d6; --h5: #5598e7; --h6: #86b6ef; --h7: #cde2fb;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #0d0d0d; --surface-1: #1a1a19; --ink-1: #f0efec; --ink-2: #c3c2b7; --muted: #898781;
+  --grid: #2c2c2a; --axis: #383835; --border: rgba(255,255,255,0.10);
+  --series-1: #3987e5; --series-2: #d95926; --context: #52514e;
+  --h1: #104281; --h2: #184f95; --h3: #1c5cab; --h4: #2a78d6; --h5: #5598e7; --h6: #86b6ef; --h7: #cde2fb;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--page); color: var(--ink-1);
+  font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+main { max-width: 980px; margin: 0 auto; padding: 32px 16px 64px; }
+h1 { font-size: 28px; line-height: 1.2; margin: 0 0 6px; font-weight: 650; }
+h2 { font-size: 19px; margin: 0 0 4px; font-weight: 600; }
+p { margin: 0 0 12px; color: var(--ink-2); max-width: 70ch; }
+.lede { color: var(--ink-2); margin-bottom: 24px; }
+.card { background: var(--surface-1); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin: 0 0 20px; }
+.hero { display: grid; grid-template-columns: minmax(0, 1.4fr) repeat(3, minmax(0, 1fr)); gap: 12px; margin-bottom: 20px; }
+.tile { background: var(--surface-1); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+.tile .label { font-size: 13px; color: var(--ink-2); }
+.tile .value { font-size: 26px; font-weight: 600; line-height: 1.2; margin-top: 4px; }
+.tile .note { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.tile.big .value { font-size: 48px; }
+svg { width: 100%; height: auto; display: block; overflow: visible; }
+svg text { font: 12px system-ui, -apple-system, "Segoe UI", sans-serif; }
+.lbl { fill: var(--ink-1); font-size: 13px !important; }
+.sub { fill: var(--muted); font-size: 11px !important; }
+.val { fill: var(--ink-2); font-variant-numeric: tabular-nums; }
+.tick { fill: var(--muted); font-variant-numeric: tabular-nums; font-size: 11px !important; }
+.axis-title { fill: var(--muted); font-size: 11px !important; }
+.grid { stroke: var(--grid); stroke-width: 1; }
+.grid.base { stroke: var(--axis); }
+.ref { stroke: var(--axis); stroke-width: 1; }
+.hit { fill: transparent; }
+.row:hover .hit, .row:focus .hit { fill: var(--grid); opacity: .45; }
+.row:focus { outline: none; }
+.s1, .s1 path, .s1 rect { fill: var(--series-1); }
+.s2 { fill: var(--series-2); }
+.s0 { fill: var(--context); }
+.ring { stroke: var(--surface-1); stroke-width: 2; }
+.s1-line { stroke: var(--series-1); stroke-width: 2; stroke-linecap: round; }
+.s2-line { stroke: var(--series-2); stroke-width: 2; stroke-linecap: round; }
+.s0-line { stroke: var(--muted); stroke-width: 2; stroke-linecap: round; }
+.h1 { fill: var(--h1); } .h2 { fill: var(--h2); } .h3 { fill: var(--h3); } .h4 { fill: var(--h4); }
+.h5 { fill: var(--h5); } .h6 { fill: var(--h6); } .h7 { fill: var(--h7); }
+.legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 13px; color: var(--ink-2); margin: 8px 0 12px; }
+.key { display: inline-flex; align-items: center; gap: 6px; }
+.key svg { width: 14px; height: 14px; display: inline-block; }
+.two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--grid); }
+th { color: var(--ink-2); font-weight: 600; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+tr.hl td { background: color-mix(in srgb, var(--series-1) 8%, transparent); }
+.tag { font-size: 11px; color: var(--ink-2); border: 1px solid var(--border); border-radius: 999px; padding: 0 6px; margin-left: 4px; white-space: nowrap; }
+.scroll { overflow-x: auto; }
+details summary { cursor: pointer; color: var(--ink-2); font-size: 13px; margin-top: 8px; }
+ul { color: var(--ink-2); padding-left: 20px; margin: 0; }
+li { margin-bottom: 6px; }
+#tip { position: fixed; pointer-events: none; opacity: 0; transition: opacity .08s; z-index: 10;
+  background: var(--surface-1); color: var(--ink-1); border: 1px solid var(--border); border-radius: 8px;
+  padding: 8px 10px; font-size: 12px; line-height: 1.45; white-space: pre-line; box-shadow: 0 4px 16px rgba(0,0,0,.15); max-width: 260px; }
+footer { color: var(--muted); font-size: 12px; margin-top: 24px; }
+@media (max-width: 760px) {
+  .hero { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .tile.big { grid-column: 1 / -1; }
+  .two { grid-template-columns: minmax(0, 1fr); }
+}
+</style>
+</head>
+<body>
+<main>
+  <h1>Who wins the {{ season }} F1 Drivers' Championship?</h1>
+  <p class="lede">{{ n_sims_text }} simulated {{ season }} seasons, built from {{ as_of_text }}. {{ season }} is the
+    <strong>{{ kind_label }}</strong>, so the model carries over {{ "%.0f"|format(rho * 100) }}% of each team's end-of-season
+    car advantage (the rate learned from history for this kind of season).</p>
+
+  <section class="hero" aria-label="Headline numbers">
+    <div class="tile big"><div class="label">Favourite</div><div class="value">{{ hero_p|pct }}</div>
+      <div class="note">{{ hero_name }} · {{ hero_team }}</div></div>
+    <div class="tile"><div class="label">Runner-up pick</div><div class="value">{{ second_p|pct }}</div>
+      <div class="note">{{ second_name }}</div></div>
+    <div class="tile"><div class="label">Car carry-over, {{ kind_short }}</div><div class="value">{{ "%.2f"|format(rho) }}</div>
+      <div class="note">from {{ n_pairs }} team transitions</div></div>
+    <div class="tile"><div class="label">Champion picked first in backtest</div><div class="value">{{ top_pick_rate|pct }}</div>
+      <div class="note">{{ bt_seasons }} seasons, 1997–2026</div></div>
+  </section>
+
+  <section class="card">
+    <h2>Title chances</h2>
+    <p>Share of simulated seasons each driver ends as champion. Hover a row for top-3 odds and expected points.</p>
+    {{ svg_wdc|safe }}
+  </section>
+
+  <section class="card">
+    <h2>Where each driver finishes</h2>
+    <p>Probability of each final championship position. Darker means more likely.</p>
+    <div class="legend">{{ heat_legend|safe }}</div>
+    <div class="scroll">{{ svg_heat|safe }}</div>
+  </section>
+
+  <section class="card">
+    <h2>Projected car pace for {{ season }}</h2>
+    <p>Car rating relative to the field average, in model units (a gap of 1.0 means the faster car wins a straight
+      fight about 73% of the time). The {{ season }} dot is end-of-{{ season - 1 }} pace × {{ "%.2f"|format(rho) }}; the line is the 80% range.</p>
+    <div class="legend">
+      <span class="key"><svg viewBox="0 0 14 14"><circle class="s1" cx="7" cy="7" r="5"/></svg>{{ season }} projection (80% range)</span>
+      <span class="key"><svg viewBox="0 0 14 14"><circle class="s2" cx="7" cy="7" r="4.5"/></svg>End of {{ season - 1 }}</span>
+    </div>
+    {{ svg_car|safe }}
+  </section>
+
+  <section class="card">
+    <h2>Why carry-over matters: history of car ratings</h2>
+    <p>Each dot is one team from one season to the next since 1994. Lines show the fitted carry-over rate for each kind of
+      season (a slope of 1 would mean the order carries over unchanged). {{ carry_story }}</p>
+    <div class="legend">
+      <span class="key"><svg viewBox="0 0 14 14"><circle class="s1" cx="7" cy="7" r="5"/></svg>Second year of rules (ρ = {{ "%.2f"|format(rhos.reg_year_2) }})</span>
+      <span class="key"><svg viewBox="0 0 14 14"><circle class="s2" cx="7" cy="7" r="5"/></svg>New rules, year 1 (ρ = {{ "%.2f"|format(rhos.reg_year_1) }})</span>
+      <span class="key"><svg viewBox="0 0 14 14"><circle class="s0" cx="7" cy="7" r="5"/></svg>Stable rules (ρ = {{ "%.2f"|format(rhos.stable) }})</span>
+    </div>
+    {{ svg_scatter|safe }}
+  </section>
+
+  <section class="card">
+    <h2>Full table</h2>
+    <div class="scroll"><table>
+      <thead><tr><th>Driver</th><th>Team</th><th class="num">Title</th><th class="num">Top 3</th>
+        <th class="num">Exp. points</th><th class="num">80% range</th><th class="num">Exp. position</th></tr></thead>
+      <tbody>
+      {% for r in drivers %}<tr><td>{{ r.name }}{% if r.note %}<span class="tag">{{ r.note }}</span>{% endif %}</td><td>{{ r.team_name }}</td>
+        <td class="num">{{ r.p_wdc|pct }}</td><td class="num">{{ r.p_top3|pct }}</td><td class="num">{{ "%.0f"|format(r.exp_points) }}</td>
+        <td class="num">{{ "%.0f"|format(r.p10) }}–{{ "%.0f"|format(r.p90) }}</td><td class="num">{{ "%.1f"|format(r.exp_position) }}</td></tr>
+      {% endfor %}
+      </tbody></table></div>
+    <details><summary>Constructors' championship</summary>
+      <table><thead><tr><th>Team</th><th class="num">Title</th><th class="num">Exp. points</th></tr></thead><tbody>
+      {% for t in teams %}<tr><td>{{ t.team_name }}</td><td class="num">{{ t.p_wcc|pct }}</td><td class="num">{{ "%.0f"|format(t.exp_points) }}</td></tr>{% endfor %}
+      </tbody></table></details>
+  </section>
+
+  <section class="card">
+    <h2>How well does this work? Backtest 1997–2026</h2>
+    <p>Each season was predicted using only data from before it (the season's real entry list, no results), then compared
+      with the actual champion. Log-loss: lower is better. Settings were tuned on 1997–2019 only.</p>
+    <div class="two">
+      <div class="scroll"><table>
+        <thead><tr><th>Seasons</th><th class="num">Model</th><th class="num">Last year's points</th><th class="num">Top-2 teams</th><th class="num">Champion top pick</th></tr></thead>
+        <tbody>{% for s in summary %}<tr><td>{{ s.group }}</td><td class="num">{{ "%.2f"|format(s.logloss_model) }}</td>
+          <td class="num">{{ "%.2f"|format(s.logloss_points_share) }}</td><td class="num">{{ "%.2f"|format(s.logloss_top2_teams) }}</td>
+          <td class="num">{{ s.champion_top_pick|pct }}</td></tr>{% endfor %}</tbody>
+      </table>
+      <p style="margin-top:12px">"Last year's points" gives each driver odds in proportion to last season's points;
+        "Top-2 teams" splits 95% between the drivers of last year's two best teams.</p></div>
+      <div><h2 style="font-size:15px">Are the probabilities honest?</h2>
+        <p style="font-size:13px">Predicted chance of a top-3 finish vs how often it happened. Dots near the diagonal mean well calibrated.</p>
+        {{ svg_calib|safe }}</div>
+    </div>
+    <details><summary>Season by season</summary>
+      <div class="scroll"><table>
+        <thead><tr><th>Season</th><th>Champion</th><th class="num">Model's odds</th><th class="num">Rank</th><th>Model's favourite</th></tr></thead>
+        <tbody>{% for b in backtest %}<tr class="{{ 'hl' if b.type == 'reg_year_2' else '' }}">
+          <td>{{ b.season }}{% if b.type == 'reg_year_2' %}<span class="tag">2nd year of rules</span>{% elif b.type == 'reg_year_1' %}<span class="tag">new rules</span>{% endif %}{% if b.provisional %}<span class="tag">in progress</span>{% endif %}</td>
+          <td>{{ b.champion_name }}</td><td class="num">{{ b.p_champion|pct }}</td><td class="num">{{ b.rank_champion }}</td>
+          <td>{{ b.top_pick_name }} ({{ b.p_top_pick|pct }})</td></tr>{% endfor %}</tbody>
+      </table></div></details>
+  </section>
+
+  <section class="card">
+    <h2>How the model works</h2>
+    <ul>
+      <li><strong>Ratings.</strong> Every race, sprint and qualifying result since 1994 is fitted with a Plackett-Luce ranking
+        model: strength = driver skill + car pace, with a separate car rating (and in-season trend) per team per season. Drivers
+        moving between teams separate driver from car. Freak results far below a driver's norm (failures, crashes) are dropped.</li>
+      <li><strong>Projection.</strong> Car pace carries over at the rate learned for this kind of season; driver skill shifts with
+        age; rookies start from the average debut level. Uncertainty is drawn once per simulated season, so a team that is quick
+        is quick all year.</li>
+      <li><strong>Simulation.</strong> Each simulated race draws retirements from team and driver reliability, then a finishing
+        order from the same ranking model, and awards {{ season }} points ({{ n_rounds }} rounds, {{ n_sprints }} sprints).</li>
+    </ul>
+  </section>
+
+  <section class="card">
+    <h2>Caveats</h2>
+    <ul>
+      {% for c in caveats %}<li>{{ c }}</li>{% endfor %}
+    </ul>
+  </section>
+  <footer>Generated {{ generated }} · data: Jolpica F1 API (Ergast-compatible) · model settings: {{ settings_text }}</footer>
+</main>
+<div id="tip" role="tooltip"></div>
+<script>
+(() => {
+  const tip = document.getElementById('tip');
+  const show = (el, x, y) => {
+    tip.textContent = el.getAttribute('data-tip');
+    tip.style.opacity = 1;
+    const r = tip.getBoundingClientRect();
+    let left = x + 14, top = y + 14;
+    if (left + r.width > innerWidth - 8) left = x - r.width - 14;
+    if (top + r.height > innerHeight - 8) top = y - r.height - 14;
+    tip.style.left = Math.max(8, left) + 'px';
+    tip.style.top = Math.max(8, top) + 'px';
+  };
+  document.querySelectorAll('[data-tip]').forEach(el => {
+    el.addEventListener('mousemove', e => show(el, e.clientX, e.clientY));
+    el.addEventListener('mouseleave', () => { tip.style.opacity = 0; });
+    el.addEventListener('focus', () => { const b = el.getBoundingClientRect(); show(el, b.left + 40, b.top + b.height / 2); });
+    el.addEventListener('blur', () => { tip.style.opacity = 0; });
+  });
+})();
+</script>
+</body>
+</html>
